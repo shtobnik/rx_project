@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
+import { Observable, fromEvent } from 'rxjs';
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,13 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'rx-project';
+
+
+  clickCheck(event) {
+    console.log('event', event);
+    console.log('click', event.target.value);
+    console.log('length', event.target.value.length);
+    console.log('key', event.key);
+  }
+
 }
