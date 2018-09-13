@@ -1,19 +1,22 @@
-<form class="form" action="">
+<form class="form" action="" id="test_form">
     <h2>Test form</h2>
 
     <div class="form-i">
         <p>e-mail</p>
-        <input type="text" placeholder="e-mail" (keyup)="clickCheck($event)" id="search-box">
+        <input type="text" placeholder="e-mail" id="mail_field" [(ngModel)]="email_text" name="email">
+        <p class="error-text" *ngIf="mail_error">{{mail_error}}</p>
     </div>
     <div class="form-i">
         <p>password</p>
-        <input type="password" placeholder="password">
+        <input type="password" placeholder="password" id="pass_field" [(ngModel)]="pass_text" name="password">
+        <p class="error-text" *ngIf="pass_eror">{{pass_eror}}</p>
     </div>
     <div class="form-i">
         <p>repeat password</p>
-        <input type="password" placeholder="repeat password">
+        <input type="password" placeholder="repeat password" id="repass_field" [(ngModel)]="repass_text" name="repass">
+        <p class="error-text" *ngIf="repas_error">{{repas_error}}</p>
     </div>
     <div class="form-i">
-        <button class="btn register-btn">Register</button>
+        <button type="submit" class="btn register-btn" [disabled]="!isButtonActive">Register</button>
     </div>
 </form>
