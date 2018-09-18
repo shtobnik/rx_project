@@ -11,13 +11,13 @@ import { tap } from 'rxjs/operators';
 export class AppComponent implements AfterViewInit {
   title = 'rx-project';
 
-  email_text:      string;
-  pass_text:       string;
-  repass_text:     string;
+  email_text:  string;
+  pass_text:   string;
+  repass_text: string;
 
-  mail_error:      string;
-  pass_eror:       string;
-  repas_error:     string;
+  mail_error:  string;
+  pass_eror:   string;
+  repas_error: string;
 
   isButtonActive = false;
 
