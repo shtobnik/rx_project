@@ -23,12 +23,10 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
 
-    const testForm    = document.getElementById('test_form'),
-          mailField   = document.getElementById('mail_field'),
-          passField   = document.getElementById('pass_field'),
-          repassField = document.getElementById('repass_field');
+    const testForm    = document.getElementById('test_form');
 
     const formSubmit  = fromEvent(testForm, 'submit');
+
 
     const detectBlurEvent$ = id =>
     fromEvent(document.getElementById(id), 'blur').pipe(
@@ -44,6 +42,8 @@ export class AppComponent implements AfterViewInit {
         } else if ( elementId === 'pass_field' ) {
           if ( (<HTMLTextAreaElement>e.target).value.length > 4  ) {
             this.pass_eror = '';
+          } else if ( (<HTMLTextAreaElement>e.target).value.length > 0 && (<HTMLTextAreaElement>e.target).value.length < 4 ) {
+            this.pass_eror = 'password must be more than 4 characters';
           } else {
             this.pass_eror = 'Enter correct password';
           }
