@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { fromEvent, combineLatest } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -21,53 +21,69 @@ export class AppComponent implements AfterViewInit {
 
   isButtonActive = false;
 
-  ngAfterViewInit() {
+@ViewChild('repassField') repassField: ElementRef;
 
-    const testForm    = document.getElementById('test_form');
+@ViewChild("mailField") mailField: ElementRef;
 
-    const formSubmit  = fromEvent(testForm, 'submit');
+@ViewChild("passField") passField: ElementRef;
+
+@ViewChild("testForm") testForm: ElementRef;
 
 
-    const detectBlurEvent$ = id =>
-    fromEvent(document.getElementById(id), 'blur').pipe(
-      tap((e) => {
-        const elementId = (<HTMLTextAreaElement>e.target).id;
+  ngAfterViewInit(): void {
 
-        if ( elementId === 'mail_field' ) {
-          if ( validateEmail(this.email_text) ) {
-            this.mail_error = '';
-          } else {
-            this.mail_error = 'Enter correct email';
-          }
-        } else if ( elementId === 'pass_field' ) {
-          if ( (<HTMLTextAreaElement>e.target).value.length > 4  ) {
-            this.pass_eror = '';
-          } else if ( (<HTMLTextAreaElement>e.target).value.length > 0 && (<HTMLTextAreaElement>e.target).value.length < 4 ) {
-            this.pass_eror = 'password must be more than 4 characters';
-          } else {
-            this.pass_eror = 'Enter correct password';
-          }
-        } else if ( elementId === 'repass_field' ) {
-          if ( this.repass_text && this.pass_text === this.repass_text ) {
-            this.repas_error = '';
-          } else {
-            this.repas_error = 'Enter correct repass';
-          }
+    const formSubmit  = fromEvent(this.testForm.nativeElement, 'submit');
+
+
+    const mail = fromEvent(this.mailField.nativeElement, 'blur').pipe(
+      tap((e: any) => {
+
+        if ( validateEmail((<HTMLTextAreaElement>e.target).value) ) {
+          this.mail_error = '';
+          this.email_text = (<HTMLTextAreaElement>e.target).value;
+        } else {
+          this.mail_error = 'Enter correct email';
         }
 
       })
     );
 
+    const password = fromEvent(this.passField.nativeElement, 'blur').pipe(
+      tap((e: any) => {
 
-    const combineTotal$ = combineLatest(detectBlurEvent$('mail_field'), detectBlurEvent$('pass_field'), detectBlurEvent$('repass_field'))
+        if ( (<HTMLTextAreaElement>e.target).value.length > 4  ) {
+          this.pass_eror = '';
+          this.pass_text = (<HTMLTextAreaElement>e.target).value;
+        } else if ( (<HTMLTextAreaElement>e.target).value.length > 0 && (<HTMLTextAreaElement>e.target).value.length < 4 ) {
+          this.pass_eror = 'password must be more than 4 characters';
+        } else {
+          this.pass_eror = 'Enter correct password';
+        }
+
+      })
+    );
+
+    const rePassword = fromEvent(this.repassField.nativeElement, 'blur').pipe(
+      tap((e: any) => {
+
+        if ( (<HTMLTextAreaElement>e.target).value && this.passField.nativeElement.value === (<HTMLTextAreaElement>e.target).value ) {
+          this.repas_error = '';
+          this.repass_text = (<HTMLTextAreaElement>e.target).value;
+        } else {
+          this.repas_error = 'Enter correct repass';
+        }
+
+      })
+    );
+
+    const combineTotal$ = combineLatest(mail, password, rePassword)
       .subscribe((e: any) => {
         if ( this.mail_error === '' && this.pass_eror === '' && this.repas_error === '' ) {
           this.isButtonActive = true;
         }
       });
 
-
-    const submitSubscribe = formSubmit.subscribe(() => alert([' email: ' + this.email_text, '\n password: ' + this.pass_text, '\n repeat password: ' + this.pass_text]));
+    const submitSubscribe = formSubmit.subscribe(() => alert([' email: ' + this.email_text, '\n password: ' + this.pass_text, '\n repeat password: ' + this.repass_text]));
 
 
     function validateEmail(email) {
